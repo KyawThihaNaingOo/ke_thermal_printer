@@ -11,7 +11,6 @@ class MethodChannelKeThermalPrinter extends KeThermalPrinterPlatform {
 
   @override
   Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
-    return version;
+    return methodChannel.invokeMethod<String>('getPlatformVersion');
   }
 }

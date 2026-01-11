@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:ke_thermal_printer/ke_thermal_printer.dart';
 
 void main() {
@@ -16,48 +19,51 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-  final _keThermalPrinterPlugin = KeThermalPrinter();
+  String? bluetoothUUID;
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion =
-          await _keThermalPrinterPlugin.getPlatformVersion() ?? 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
+    _initBluetooth();
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
+        appBar: AppBar(title: const Text('Plugin example app')),
+        body: Center(child: Text('Running...')),
       ),
     );
   }
+
+  Future<void> _initBluetooth() async {
+    FlutterBluePlus.adapterState.listen((state) {
+      if (state == BluetoothAdapterState.on) {
+        FlutterBluePlus.startScan(timeout: const Duration(seconds: 5));
+      }
+    });
+    FlutterBluePlus.scanResults.listen((results) {
+      for (ScanResult r in results) {
+        print('${r.device.platformName} found! rssi: ${r.rssi}');
+        if (r.device.platformName == 'Mobile printer-385C') {
+          FlutterBluePlus.stopScan();
+          r.device.connect(license: License.free);
+          bluetoothUUID = r.device.remoteId.str;
+          log(bluetoothUUID!, name: 'Bluetooth UUID');
+          // listenerDevice(r.device);
+          break;
+        }
+      }
+    });
+  }
+
+  // void listenerDevice(BluetoothDevice device) {
+  //   device.state.listen((state) {
+  //     print('Device ${device.platformName} is now in state $state');
+  //     if (state == BluetoothConnectionState.connected) {
+  //       print('Device ${device.platformName} is now in state $state');
+  //     }
+  //   });
+  // }
 }

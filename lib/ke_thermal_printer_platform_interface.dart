@@ -26,4 +26,8 @@ abstract class KeThermalPrinterPlatform extends PlatformInterface {
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
+
+  Future<bool> startScanBluetoothDevices() {
+    throw UnimplementedError('startScanBluetoothDevices() has not been implemented.');
+  }
 }
