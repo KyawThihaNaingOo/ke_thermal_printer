@@ -26,4 +26,7 @@ A new Flutter project.
   # plugin's privacy impact, and then uncomment this line. For more information,
   # see https://developer.apple.com/documentation/bundleresources/privacy_manifest_files
   # s.resource_bundles = {'ke_thermal_printer_privacy' => ['Resources/PrivacyInfo.xcprivacy']}
+
+  # Here the name of the library can include lib as the file name has it too.
+  s.vendored_libraries = 'libRTPrinterSDK.a'
 end
