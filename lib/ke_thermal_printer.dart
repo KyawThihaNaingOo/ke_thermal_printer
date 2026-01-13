@@ -1,10 +1,23 @@
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:ke_thermal_printer/exceptions/ble_not_support_exception.dart';
 
 import 'ke_thermal_printer_platform_interface.dart';
 
 class KEThermalPrinter {
   Future<String?> getPlatformVersion() {
     return KeThermalPrinterPlatform.instance.getPlatformVersion();
+  }
+
+  Future<bool> get isSupportBLE async {
+    return FlutterBluePlus.isSupported;
+  }
+
+  Future<void> turnOnBluetooth() async {
+    final isSupport = await isSupportBLE;
+    if (!isSupport) {
+      throw BLENotSupportException();
+    }
+    return FlutterBluePlus.turnOn();
   }
 
   void stopScanBluetoothDevices() {
