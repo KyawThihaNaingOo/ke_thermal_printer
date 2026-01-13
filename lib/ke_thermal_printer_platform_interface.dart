@@ -35,18 +35,21 @@ abstract class KeThermalPrinterPlatform extends PlatformInterface {
       if (state == BluetoothAdapterState.on) {
         FlutterBluePlus.startScan(timeout: timeout);
       }
+      if (state == BluetoothAdapterState.off) {
+        FlutterBluePlus.turnOn();
+      }
     });
     return FlutterBluePlus.scanResults..listen((results) {
       // for (ScanResult r in results) {
       //   print('${r.device.platformName} found! rssi: ${r.rssi}');
-        // if (r.device.platformName == 'Mobile printer-385C') {
-        //   FlutterBluePlus.stopScan();
-        //   r.device.connect(license: License.free);
-        //   bluetoothUUID = r.device.remoteId.str;
-        //   log(bluetoothUUID!, name: 'Bluetooth UUID');
-        //   // listenerDevice(r.device);
-        //   break;
-        // }
+      // if (r.device.platformName == 'Mobile printer-385C') {
+      //   FlutterBluePlus.stopScan();
+      //   r.device.connect(license: License.free);
+      //   bluetoothUUID = r.device.remoteId.str;
+      //   log(bluetoothUUID!, name: 'Bluetooth UUID');
+      //   // listenerDevice(r.device);
+      //   break;
+      // }
       // }
     });
   }

@@ -40,7 +40,13 @@ class _MyAppState extends State<MyApp> {
     _kePrinter.startScanBluetoothDevices().listen((event) {
       log('Scan result event received with ${event.length} devices.');
       for (BLEScanResult r in event) {
-        log('${r.device.remoteId.str} || ${r.device.platformName} found! rssi: ${r.rssi}');
+        log(r.advertisementData.manufacturerData.toString());
+        r.bleDevice.connectionState.listen((event) {
+          event.isConnected;
+        });
+        log(
+          '${r.device.remoteId.str} || ${r.device.platformName} found! rssi: ${r.rssi}',
+        );
       }
     });
   }
