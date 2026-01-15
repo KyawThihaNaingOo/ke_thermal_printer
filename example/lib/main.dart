@@ -18,7 +18,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String? bluetoothUUID;
-  final KEThermalPrinter _kePrinter = KEThermalPrinter();
+  final KEThermalPrinterUtils _kePrinter = KEThermalPrinterUtils();
 
   @override
   void initState() {
