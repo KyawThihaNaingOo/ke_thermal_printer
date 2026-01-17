@@ -50,6 +50,11 @@ class KeThermalPrinterPlugin : FlutterPlugin, MethodCallHandler {
                     response(result, mapOf("message" to "Self test completed"))
                 }
 
+                "get_printer_status" -> {
+                    val status = printerManager.connected()
+                    response(result, mapOf("message" to status.name))
+                }
+
                 "connect_ble" -> {
                     val address = call.argument<String>("address") ?: ""
                     if (address.trim().isEmpty()) {
@@ -58,14 +63,16 @@ class KeThermalPrinterPlugin : FlutterPlugin, MethodCallHandler {
                     // Initialize BLE manager and connect
                     bleManager = BluetoothConnectionManager()
                     bleManager.connect(address)
-                    response(result, mapOf("message" to "Connected to BLE printer"))
+                    response(result, mapOf("message" to "Printer(BLE) connected"))
                 }
 
                 "print_text" -> {
-
+                    val text = call.argument<String>("text") ?: ""
+//                    printerManager.printText(text)
+                    response(result, mapOf("message" to "Text printed"))
                 }
 
-                "disconnectPrinter" -> {
+                "disconnect" -> {
                     printerManager.disconnect()
                     response(result, mapOf("message" to "Printer disconnected"))
                 }
@@ -93,3 +100,4 @@ class KeThermalPrinterPlugin : FlutterPlugin, MethodCallHandler {
         channel.setMethodCallHandler(null)
     }
 }
+

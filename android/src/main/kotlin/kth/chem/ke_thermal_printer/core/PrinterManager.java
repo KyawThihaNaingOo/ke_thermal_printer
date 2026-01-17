@@ -12,6 +12,7 @@ import com.rt.printerlibrary.enumerate.BaseEnum;
 import com.rt.printerlibrary.enumerate.ConnectStateEnum;
 import com.rt.printerlibrary.factory.cmd.CmdFactory;
 import com.rt.printerlibrary.factory.printer.LabelPrinterFactory;
+import com.rt.printerlibrary.factory.printer.PinPrinterFactory;
 import com.rt.printerlibrary.factory.printer.PrinterFactory;
 import com.rt.printerlibrary.factory.printer.ThermalPrinterFactory;
 import com.rt.printerlibrary.factory.printer.UniversalPrinterFactory;
@@ -64,8 +65,10 @@ public class PrinterManager {
         PrinterFactory factory;
         if (currentCmdType == BaseEnum.CMD_ESC) {
             factory = new ThermalPrinterFactory();
-        } else if (currentCmdType == BaseEnum.CMD_CPCL) {
+        } else if (currentCmdType == BaseEnum.CMD_CPCL || currentCmdType == BaseEnum.CMD_TSC || currentCmdType == BaseEnum.CMD_ZPL) {
             factory = new LabelPrinterFactory();
+        } else if (currentCmdType == BaseEnum.CMD_PIN) {
+            factory = new PinPrinterFactory();
         } else {
             factory = new UniversalPrinterFactory();
         }
@@ -79,8 +82,8 @@ public class PrinterManager {
         return instance;
     }
 
-    public boolean connected() {
-        return rtPrinter.getConnectState() == ConnectStateEnum.Connected;
+    public ConnectStateEnum connected() {
+        return rtPrinter.getConnectState();
     }
 
     public RTPrinter getPrinter() {

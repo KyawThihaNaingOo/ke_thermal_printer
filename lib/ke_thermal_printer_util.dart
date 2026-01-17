@@ -1,12 +1,16 @@
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:ke_thermal_printer/enums/cmd_types.dart';
 import 'package:ke_thermal_printer/exceptions/ble_not_support_exception.dart';
 
 import 'ke_thermal_printer_platform_interface.dart';
 import 'models/scan_result.dart';
 
 class KEThermalPrinterUtils {
-  Future<String?> getPlatformVersion() {
-    return KeThermalPrinterPlatform.instance.getPlatformVersion();
+  final KeThermalPrinterPlatform _printerPlatform =
+      KeThermalPrinterPlatform.instance;
+
+  Future<void> initialize(CmdTypes cmdType) async {
+    return KeThermalPrinterPlatform.instance.initialize(cmdType);
   }
 
   // ################### BLE Methods ###################
@@ -43,8 +47,10 @@ class KEThermalPrinterUtils {
           .toList();
     });
   }
+
+  Future<Map<String, dynamic>?> connectBluetoothDevice(String printerID) {
+    return _printerPlatform.connectBluetoothDevice(printerID);
+  }
 }
-
-
 
 // ################### End of BLE Methods ###################

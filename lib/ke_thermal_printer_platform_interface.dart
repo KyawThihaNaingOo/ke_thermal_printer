@@ -1,4 +1,5 @@
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:ke_thermal_printer/enums/cmd_types.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'ke_thermal_printer_method_channel.dart';
@@ -24,33 +25,29 @@ abstract class KeThermalPrinterPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
+  Future<void> initialize(CmdTypes cmdType) async {
+    throw UnimplementedError('initialize() has not been implemented.');
   }
 
   Stream<List<ScanResult>> startScanBluetoothDevices({
     Duration timeout = const Duration(seconds: 5),
   }) {
-    FlutterBluePlus.adapterState.listen((state) {
-      if (state == BluetoothAdapterState.on) {
-        FlutterBluePlus.startScan(timeout: timeout);
-      }
-      if (state == BluetoothAdapterState.off) {
-        FlutterBluePlus.turnOn();
-      }
-    });
-    return FlutterBluePlus.scanResults..listen((results) {
-      // for (ScanResult r in results) {
-      //   print('${r.device.platformName} found! rssi: ${r.rssi}');
-      // if (r.device.platformName == 'Mobile printer-385C') {
-      //   FlutterBluePlus.stopScan();
-      //   r.device.connect(license: License.free);
-      //   bluetoothUUID = r.device.remoteId.str;
-      //   log(bluetoothUUID!, name: 'Bluetooth UUID');
-      //   // listenerDevice(r.device);
-      //   break;
-      // }
-      // }
-    });
+    throw UnimplementedError(
+      'startScanBluetoothDevices() has not been implemented.',
+    );
+  }
+
+  Future<Map<String, dynamic>?> connectBluetoothDevice(String printerID) {
+    throw UnimplementedError(
+      'connectBluetoothDevice() has not been implemented.',
+    );
+  }
+
+  Future<Map<String, dynamic>?> selfTestPrinter() {
+    throw UnimplementedError('selfTestPrinter() has not been implemented.');
+  }
+
+  Future<Map<String, dynamic>?> getPrinterStatus() {
+    throw UnimplementedError('getPrinterStatus() has not been implemented.');
   }
 }

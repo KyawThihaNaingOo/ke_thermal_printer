@@ -24,6 +24,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _initBluetooth();
+    _kePrinter.initialize(CmdTypes.esc);
   }
 
   @override
@@ -31,7 +32,37 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('Plugin example app')),
-        body: Center(child: Text('Running...')),
+        body: StreamBuilder(
+          stream: _kePrinter.startScanBluetoothDevices(),
+          builder: (context, asyncSnapshot) {
+            if (!asyncSnapshot.hasData) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (asyncSnapshot.hasError) {
+              return Center(child: Text('Error: ${asyncSnapshot.error}'));
+            }
+            if(asyncSnapshot.data == null || asyncSnapshot.data!.isEmpty) {
+              return const Center(child: Text('No devices found'));
+            }
+            final scanResults = asyncSnapshot.data!;
+            return ListView.builder(
+              itemCount: scanResults.length,
+              itemBuilder: (context, index) {
+                final scanResult = scanResults[index];
+                return ListTile(
+                  onTap: () {
+                    _kePrinter.connectBluetoothDevice(
+                      scanResult.device.remoteId.str,
+                    );
+                  },
+                  title: Text(
+                    'Device: ${scanResult.device.remoteId.str} || RSSI: ${scanResult.rssi}',
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
@@ -42,7 +73,7 @@ class _MyAppState extends State<MyApp> {
       for (BLEScanResult r in event) {
         log(r.advertisementData.manufacturerData.toString());
         r.bleDevice.connectionState.listen((event) {
-          event.isConnected;
+          // event.isConnected;
         });
         log(
           '${r.device.remoteId.str} || ${r.device.platformName} found! rssi: ${r.rssi}',
