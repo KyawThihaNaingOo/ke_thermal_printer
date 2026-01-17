@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -39,29 +41,33 @@ class MethodChannelKeThermalPrinter extends KeThermalPrinterPlatform {
   }
 
   @override
-  Future<void> initialize(CmdTypes cmdType) {
-    return methodChannel.invokeMethod('initialize_printer', {
+  Future<Map<String, dynamic>?> initialize(CmdTypes cmdType) async {
+    final res = await methodChannel.invokeMethod('initialize_printer', {
       'cmd': cmdType.value,
     });
+    return Map<String, dynamic>.from(res);
   }
 
   @override
-  Future<Map<String, dynamic>?> connectBluetoothDevice(String printerID) async {
-    return methodChannel.invokeMethod<Map<String, dynamic>>('connect_ble', {
+  Future<Map<String, dynamic>> connectBluetoothDevice(String printerID) async {
+    final res = await methodChannel.invokeMethod('connect_ble', {
       'address': printerID,
     });
-  }
-
-  @override
-  Future<Map<String, dynamic>?> getPrinterStatus() {
-    return methodChannel.invokeMethod<Map<String, dynamic>?>(
-      'get_printer_status',
+    log(
+      "ke_thermal_printer_method_channel: 66666 connectBluetoothDevice: $res",
     );
+    return Map<String, dynamic>.from(res);
   }
 
   @override
-  Future<Map<String, dynamic>> selfTestPrinter() {
-    return methodChannel.invokeMethod<Map<String, dynamic>>('self_test_printer')
-        as Future<Map<String, dynamic>>;
+  Future<Map<String, dynamic>?> getPrinterStatus() async {
+    final res = await methodChannel.invokeMethod('get_printer_status');
+    return Map<String, dynamic>.from(res);
+  }
+
+  @override
+  Future<Map<String, dynamic>> selfTestPrinter() async {
+    final res = await methodChannel.invokeMethod('self_test_printer');
+    return Map<String, dynamic>.from(res);
   }
 }

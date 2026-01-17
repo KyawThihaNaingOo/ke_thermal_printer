@@ -40,24 +40,25 @@ public class PrinterManager {
     private PrinterManager() {
     }
 
-    public void init(String printerCMD) {
-        switch (printerCMD) {
-            case "ESC":
-                initPrinter(BaseEnum.CMD_ESC);
-                break;
-            case "CPCL":
-                initPrinter(BaseEnum.CMD_CPCL);
-                break;
-            case "TSC":
-                initPrinter(BaseEnum.CMD_TSC);
-                break;
-            case "ZPL":
-                initPrinter(BaseEnum.CMD_ZPL);
-                break;
-            default:
-                initPrinter(BaseEnum.CMD_ESC);
-                break;
-        }
+    public void init(@BaseEnum.CmdType int printerCMD) {
+        initPrinter(printerCMD);
+//        switch (printerCMD) {
+//            case BaseEnum.CmdType:
+//                initPrinter(BaseEnum.CMD_ESC);
+//                break;
+//            case "CPCL":
+//                initPrinter(BaseEnum.CMD_CPCL);
+//                break;
+//            case "TSC":
+//                initPrinter(BaseEnum.CMD_TSC);
+//                break;
+//            case "ZPL":
+//                initPrinter(BaseEnum.CMD_ZPL);
+//                break;
+//            default:
+//                initPrinter(BaseEnum.CMD_ESC);
+//                break;
+//        }
     }
 
     public void initPrinter(@BaseEnum.CmdType int currentCmdType) {

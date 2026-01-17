@@ -9,7 +9,7 @@ class KEThermalPrinterUtils {
   final KeThermalPrinterPlatform _printerPlatform =
       KeThermalPrinterPlatform.instance;
 
-  Future<void> initialize(CmdTypes cmdType) async {
+  Future<Map<String, dynamic>?> initialize(CmdTypes cmdType) async {
     return KeThermalPrinterPlatform.instance.initialize(cmdType);
   }
 
@@ -48,8 +48,12 @@ class KEThermalPrinterUtils {
     });
   }
 
-  Future<Map<String, dynamic>?> connectBluetoothDevice(String printerID) {
+  Future<Map<String,dynamic>?> connectBluetoothDevice(String printerID) {
     return _printerPlatform.connectBluetoothDevice(printerID);
+  }
+
+  Future<Map<String, dynamic>?> getPrinterStatus() {
+    return _printerPlatform.getPrinterStatus();
   }
 }
 

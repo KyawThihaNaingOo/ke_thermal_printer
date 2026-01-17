@@ -24,7 +24,9 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _initBluetooth();
-    _kePrinter.initialize(CmdTypes.esc);
+    _kePrinter.initialize(CmdTypes.esc).then((value) {
+      log('_kePrinter init --> $value');
+    });
   }
 
   @override
@@ -41,7 +43,7 @@ class _MyAppState extends State<MyApp> {
             if (asyncSnapshot.hasError) {
               return Center(child: Text('Error: ${asyncSnapshot.error}'));
             }
-            if(asyncSnapshot.data == null || asyncSnapshot.data!.isEmpty) {
+            if (asyncSnapshot.data == null || asyncSnapshot.data!.isEmpty) {
               return const Center(child: Text('No devices found'));
             }
             final scanResults = asyncSnapshot.data!;
@@ -50,10 +52,16 @@ class _MyAppState extends State<MyApp> {
               itemBuilder: (context, index) {
                 final scanResult = scanResults[index];
                 return ListTile(
-                  onTap: () {
-                    _kePrinter.connectBluetoothDevice(
+                  onTap: () async {
+                    final res = await _kePrinter.connectBluetoothDevice(
                       scanResult.device.remoteId.str,
                     );
+
+                    log('Connection result: $res');
+
+                    final status = await _kePrinter.getPrinterStatus();
+
+                    log('Printer status: $status');
                   },
                   title: Text(
                     'Device: ${scanResult.device.remoteId.str} || RSSI: ${scanResult.rssi}',

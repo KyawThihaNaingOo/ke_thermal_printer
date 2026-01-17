@@ -25,7 +25,7 @@ abstract class KeThermalPrinterPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<void> initialize(CmdTypes cmdType) async {
+  Future<Map<String,dynamic>?> initialize(CmdTypes cmdType) async {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -37,7 +37,7 @@ abstract class KeThermalPrinterPlatform extends PlatformInterface {
     );
   }
 
-  Future<Map<String, dynamic>?> connectBluetoothDevice(String printerID) {
+  Future<Map<String,dynamic>?> connectBluetoothDevice(String printerID) {
     throw UnimplementedError(
       'connectBluetoothDevice() has not been implemented.',
     );
