@@ -15,12 +15,13 @@ import kth.chem.ke_thermal_printer.core.exceptions.ConnectionException
 /** KeThermalPrinterPlugin */
 class KeThermalPrinterPlugin : FlutterPlugin, MethodCallHandler {
     private lateinit var channel: MethodChannel
-    private lateinit var printerManager: PrinterManager
+    private val printerManager: PrinterManager = PrinterManager.getInstance()
     private lateinit var bleManager: BluetoothConnectionManager
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "ke_thermal_printer")
         channel.setMethodCallHandler(this)
+//        printerManager = PrinterManager.getInstance()
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {
