@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:ke_thermal_printer/enums/cmd_types.dart';
+import 'package:ke_thermal_printer/enums/enums.dart';
 
 import 'ke_thermal_printer_platform_interface.dart';
 
@@ -11,7 +11,28 @@ import 'ke_thermal_printer_platform_interface.dart';
 class MethodChannelKeThermalPrinter extends KeThermalPrinterPlatform {
   /// The method channel used to interact with the native platform.
   @visibleForTesting
-  final methodChannel = const MethodChannel('ke_thermal_printer');
+  final methodChannel = const MethodChannel('ke_thermal_printer_method');
+  @visibleForTesting
+  final eventChannel = const EventChannel('ke_thermal_printer_event');
+  late final Stream<Map<String, dynamic>> _printerStatusListener;
+  late final Stream<Map<String, dynamic>> _printStatusListener;
+  late final Stream<Map<String, dynamic>> _baseStream;
+
+  MethodChannelKeThermalPrinter() {
+    /// listen event channel
+    _baseStream = eventChannel
+        .receiveBroadcastStream()
+        .map((e) => Map<String, dynamic>.from(e))
+        .asBroadcastStream();
+
+    _printerStatusListener = _baseStream.where(
+      (event) => event['event'] == EventTypes.printerStatus.value,
+    );
+
+    _printStatusListener = _baseStream.where(
+      (event) => event['event'] == EventTypes.printStatus.value,
+    );
+  }
 
   @override
   Stream<List<ScanResult>> startScanBluetoothDevices({
@@ -69,5 +90,20 @@ class MethodChannelKeThermalPrinter extends KeThermalPrinterPlatform {
   Future<Map<String, dynamic>> selfTestPrinter() async {
     final res = await methodChannel.invokeMethod('self_test_printer');
     return Map<String, dynamic>.from(res);
+  }
+
+  @override
+  Stream<Map<String, dynamic>> listenEventChannel() {
+    return _baseStream;
+  }
+
+  @override
+  Stream<Map<String, dynamic>> listenPrintStatus() {
+    return _printStatusListener;
+  }
+
+  @override
+  Stream<Map<String, dynamic>> listenPrinterStatus() {
+    return _printerStatusListener;
   }
 }

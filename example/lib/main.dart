@@ -26,6 +26,8 @@ class _MyAppState extends State<MyApp> {
     _initBluetooth();
     _kePrinter.initialize(CmdTypes.esc).then((value) {
       log('_kePrinter init --> $value');
+
+      /// init listener
     });
   }
 
@@ -59,9 +61,13 @@ class _MyAppState extends State<MyApp> {
 
                     log('Connection result: $res');
 
-                    final status = await _kePrinter.getPrinterStatus();
+                    _kePrinter.listenEventChannel().listen((event) {
+                      log('Event channel -> $event');
+                    });
 
-                    log('Printer status: $status');
+                    _kePrinter.listenPrinterStatus().listen((event) {
+                      log('Printer status -> $event');
+                    });
                   },
                   title: Text(
                     'Device: ${scanResult.device.remoteId.str} || RSSI: ${scanResult.rssi}',
@@ -87,6 +93,18 @@ class _MyAppState extends State<MyApp> {
           '${r.device.remoteId.str} || ${r.device.platformName} found! rssi: ${r.rssi}',
         );
       }
+    });
+  }
+
+  void _initListener() {
+    _kePrinter.listenEventChannel().listen((event) {
+      log('Event channel -> $event');
+    });
+    _kePrinter.listenPrinterStatus().listen((event) {
+      log('Printer status -> $event');
+    });
+    _kePrinter.listenPrintStatus().listen((event) {
+      log('Print status -> $event');
     });
   }
 }

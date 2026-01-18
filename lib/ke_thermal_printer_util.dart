@@ -48,12 +48,28 @@ class KEThermalPrinterUtils {
     });
   }
 
-  Future<Map<String,dynamic>?> connectBluetoothDevice(String printerID) {
+  Future<Map<String, dynamic>?> connectBluetoothDevice(String printerID) {
     return _printerPlatform.connectBluetoothDevice(printerID);
   }
 
   Future<Map<String, dynamic>?> getPrinterStatus() {
     return _printerPlatform.getPrinterStatus();
+  }
+
+  Future<Map<String, dynamic>?> selfTestPrinter() {
+    return _printerPlatform.selfTestPrinter();
+  }
+
+  Stream<Map<String, dynamic>?> listenEventChannel() {
+    return _printerPlatform.listenEventChannel();
+  }
+
+  Stream<Map<String, dynamic>?> listenPrintStatus() {
+    return _printerPlatform.listenPrintStatus();
+  }
+
+  Stream<Map<String, dynamic>?> listenPrinterStatus() {
+    return _printerPlatform.listenPrinterStatus();
   }
 }
 
