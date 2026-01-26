@@ -24,10 +24,11 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _initBluetooth();
-    _kePrinter.initialize(CmdTypes.esc).then((value) {
+    _kePrinter.initialize(CmdTypes.esc, ConnectTypes.bluetoothBle).then((
+      value,
+    ) {
       log('_kePrinter init --> $value');
-
-      /// init listener
+      listenerDevice();
     });
   }
 
@@ -54,20 +55,19 @@ class _MyAppState extends State<MyApp> {
               itemBuilder: (context, index) {
                 final scanResult = scanResults[index];
                 return ListTile(
+                  subtitle: Text('${scanResult.device.advName}'),
                   onTap: () async {
                     final res = await _kePrinter.connectBluetoothDevice(
                       scanResult.device.remoteId.str,
                     );
 
-                    log('Connection result: $res');
-
+                    // log('Connection result: $res');
+                    //
                     _kePrinter.listenEventChannel().listen((event) {
                       log('Event channel -> $event');
                     });
 
-                    _kePrinter.listenPrinterStatus().listen((event) {
-                      log('Printer status -> $event');
-                    });
+                    listenerDevice();
                   },
                   title: Text(
                     'Device: ${scanResult.device.remoteId.str} || RSSI: ${scanResult.rssi}',
@@ -79,6 +79,15 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     );
+  }
+
+  void listenerDevice() {
+    _kePrinter.listenPrinterStatus().listen((event) {
+      log('Printer status -> $event');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('$event'), duration: Duration(seconds: 1)),
+      );
+    });
   }
 
   Future<void> _initBluetooth() async {
@@ -93,18 +102,6 @@ class _MyAppState extends State<MyApp> {
           '${r.device.remoteId.str} || ${r.device.platformName} found! rssi: ${r.rssi}',
         );
       }
-    });
-  }
-
-  void _initListener() {
-    _kePrinter.listenEventChannel().listen((event) {
-      log('Event channel -> $event');
-    });
-    _kePrinter.listenPrinterStatus().listen((event) {
-      log('Printer status -> $event');
-    });
-    _kePrinter.listenPrintStatus().listen((event) {
-      log('Print status -> $event');
     });
   }
 }

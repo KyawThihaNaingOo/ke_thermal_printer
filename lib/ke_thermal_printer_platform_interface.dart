@@ -1,5 +1,6 @@
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:ke_thermal_printer/enums/cmd_types.dart';
+import 'package:ke_thermal_printer/enums/enums.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'ke_thermal_printer_method_channel.dart';
@@ -25,7 +26,7 @@ abstract class KeThermalPrinterPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<Map<String, dynamic>?> initialize(CmdTypes cmdType) async {
+  Future<Map<String, dynamic>?> initialize(CmdTypes cmdType, ConnectTypes connectionType) async {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 

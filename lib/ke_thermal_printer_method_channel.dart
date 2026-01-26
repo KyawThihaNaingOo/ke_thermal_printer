@@ -14,9 +14,9 @@ class MethodChannelKeThermalPrinter extends KeThermalPrinterPlatform {
   final methodChannel = const MethodChannel('ke_thermal_printer_method');
   @visibleForTesting
   final eventChannel = const EventChannel('ke_thermal_printer_event');
-  late final Stream<Map<String, dynamic>> _printerStatusListener;
-  late final Stream<Map<String, dynamic>> _printStatusListener;
-  late final Stream<Map<String, dynamic>> _baseStream;
+  late Stream<Map<String, dynamic>> _printStatusListener;
+  late Stream<Map<String, dynamic>> _printerStatusListener;
+  late Stream<Map<String, dynamic>> _baseStream;
 
   MethodChannelKeThermalPrinter() {
     /// listen event channel
@@ -24,11 +24,6 @@ class MethodChannelKeThermalPrinter extends KeThermalPrinterPlatform {
         .receiveBroadcastStream()
         .map((e) => Map<String, dynamic>.from(e))
         .asBroadcastStream();
-
-    _printerStatusListener = _baseStream.where(
-      (event) => event['event'] == EventTypes.printerStatus.value,
-    );
-
     _printStatusListener = _baseStream.where(
       (event) => event['event'] == EventTypes.printStatus.value,
     );
@@ -62,9 +57,13 @@ class MethodChannelKeThermalPrinter extends KeThermalPrinterPlatform {
   }
 
   @override
-  Future<Map<String, dynamic>?> initialize(CmdTypes cmdType) async {
+  Future<Map<String, dynamic>?> initialize(
+    CmdTypes cmdType,
+    ConnectTypes connectionType,
+  ) async {
     final res = await methodChannel.invokeMethod('initialize_printer', {
       'cmd': cmdType.value,
+      'connection_type': connectionType.value,
     });
     return Map<String, dynamic>.from(res);
   }
